@@ -1,6 +1,6 @@
 package com.vehicles.engines;
 
-public abstract class Engine {
+public class Engine {
     public final String name;
     public final int horsePower;
     public final int weight;
@@ -21,7 +21,9 @@ public abstract class Engine {
         isOn = false;
     }
 
-    public int getHorsePower(){
-        return horsePower;
+    @Override
+    public String toString() {
+        return String.format("Type: %s, Horsepower: %,d, Weight: %,d lbs",
+                name, horsePower, weight);
     }
 }

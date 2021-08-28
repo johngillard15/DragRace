@@ -6,15 +6,44 @@ public abstract class Vehicle {
     public final String name;
     public final Engine engine;
     public final int weight;
-    private final int trapSpeed;
+    protected double trapSpeed;
+    protected double dragCoefficient;
 
-    public Vehicle(String name, Engine engine, int weight){
+    public Vehicle(String name, Engine engine, int weight, double dragCoefficient){
         this.name = name;
         this.engine = engine;
         this.weight = weight + engine.weight;
-        // https://www.calculator.net/engine-horsepower-calculator.html
-        trapSpeed = (int)Math.cbrt((double)engine.getHorsePower() / (double)weight) * 234;
+        this.dragCoefficient = dragCoefficient;
+
+        calculateTrapSpeed();
     }
 
-    public abstract void drag();
+    public double getTrapSpeed(){
+        return trapSpeed;
+    }
+
+    protected void setTrapSpeed(double trapSpeed){
+        this.trapSpeed = trapSpeed;
+    }
+
+    protected void calculateTrapSpeed(){
+        // https://www.calculator.net/engine-horsepower-calculator.html
+        trapSpeed = Math.cbrt((double)engine.horsePower / (double)weight) * 234;
+    }
+
+    protected void calculateDrag() {
+        double adjustedSpeed = trapSpeed - trapSpeed * dragCoefficient;
+        setTrapSpeed(adjustedSpeed);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("""
+                Name: %s
+                Engine: [%s]
+                Total Weight: %,d lbs
+                Trap Speed (1/4 mile): %.2f mph
+                Drag Coefficient: %.2f
+                """, name, engine, weight, trapSpeed, dragCoefficient);
+    }
 }
