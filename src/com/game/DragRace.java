@@ -39,9 +39,12 @@ public class DragRace {
         Vehicle car = vehicles.get(1);
         double distance = 0;
         double feetPerSec = 1320 / car.getElapsedTime();
+
+        System.out.printf("%s, start your engine...\n", car.name);
         while(distance < 1320){
             distance += feetPerSec;
-            System.out.printf("%s now at %f feet\n", car.name, distance);
+            System.out.printf("%s now at %,.2f feet\n", car.name, distance);
         }
+        System.out.printf("%s has finished the race.\n", car.name);
     }
 }
