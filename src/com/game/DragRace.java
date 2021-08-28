@@ -17,7 +17,7 @@ public class DragRace {
         Vehicle topFuel = new DragCar("Top Fuel Dragster", nitromethane, 1850);
 
         Engine twoZZ = new Engine("2ZZ", 257, 275);
-        Vehicle lotusExige = new SportsCar("Lotus Exige", twoZZ, 2350);
+        Vehicle lotusExige = new SportsCar("Lotus Exige", twoZZ, 2110);
 
         Engine hemiV8 = new Engine("6.2L HEMI SRT Hellcat V8", 710, 500);
         Vehicle dodgeDurango = new SUV("Dodge Durango SRT Hellcat", hemiV8, 5210);
@@ -34,6 +34,14 @@ public class DragRace {
     public void run(){
         for(Vehicle vehicle : vehicles){
             System.out.println(vehicle);
+        }
+
+        Vehicle car = vehicles.get(1);
+        double distance = 0;
+        double feetPerSec = 1320 / car.getElapsedTime();
+        while(distance < 1320){
+            distance += feetPerSec;
+            System.out.printf("%s now at %f feet\n", car.name, distance);
         }
     }
 }
