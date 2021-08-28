@@ -25,10 +25,14 @@ public class DragRace {
         Engine MR6V8 = new Engine("Porsche MR6 V8", 887, 298);
         Vehicle porsche918 = new SportsCar("Porsche 918 Spyder", MR6V8, 3491);
 
+        Engine demonV8 = new Engine("6.2-liter V8", 840, 500);
+        Vehicle dodgeDemon = new SUV("Dodge Challenger SRT Demon", demonV8, 3780);
+
         vehicles.add(topFuel);
         vehicles.add(lotusExige);
         vehicles.add(dodgeDurango);
         vehicles.add(porsche918);
+        vehicles.add(dodgeDemon);
     }
 
     public void run(){
@@ -36,15 +40,18 @@ public class DragRace {
             System.out.println(vehicle);
         }
 
-        Vehicle car = vehicles.get(1);
+        Vehicle car = vehicles.get(4);
         double distance = 0;
         double feetPerSec = 1320 / car.getElapsedTime();
 
         System.out.printf("%s, start your engine...\n", car.name);
         while(distance < 1320){
             distance += feetPerSec;
-            System.out.printf("%s now at %,.2f feet\n", car.name, distance);
+
+            if(distance >= 1320)
+                System.out.printf("%s has finished the race in %.2f s.\n", car.name, car.getElapsedTime());
+            else
+                System.out.printf("%s now at %,.2f feet\n", car.name, distance);
         }
-        System.out.printf("%s has finished the race.\n", car.name);
     }
 }
