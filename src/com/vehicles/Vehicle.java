@@ -8,6 +8,8 @@ public abstract class Vehicle {
     public final int weight;
     protected double trapSpeed;
     protected double elapsedTime;
+    public int speed = 0;
+    protected int brakingDistance;
 
     public Vehicle(String name, Engine engine, int weight){
         this.name = name;
@@ -16,6 +18,8 @@ public abstract class Vehicle {
 
         calculateTrapSpeed();
         calculateElapsedTime();
+        speed += 1320 / (int)elapsedTime;
+        setBrakingDistance();
     }
 
     protected void calculateTrapSpeed(){
@@ -34,6 +38,19 @@ public abstract class Vehicle {
 
     public double getElapsedTime() {
         return elapsedTime;
+    }
+
+    public int getSpeed(){
+        return speed;
+    }
+
+
+    public int getBrakingDistance(){
+        return brakingDistance;
+    }
+
+    public void setBrakingDistance() {
+        brakingDistance = (int)Math.sqrt(trapSpeed / 10);
     }
 
     @Override
