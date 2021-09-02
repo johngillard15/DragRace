@@ -99,7 +99,7 @@ public class DragRace {
                         .map(Vehicle::getName)
                         .collect(Collectors.toList())
                         .toArray(new String[vehicles.size()])
-                        ;
+                        ; // also map(v -> v.name)
 
                 UI.listerator(vehicleNames);
                 int choice = Input.getInt(1, vehicles.size()) - 1;
