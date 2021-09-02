@@ -20,6 +20,7 @@ public class DragRace {
             "Muscle",
             "Sedan",
             "Sport",
+            "Super",
             "SUV"
     };
     public static final String[] ENGINE_TYPES = {
@@ -38,7 +39,7 @@ public class DragRace {
         vehicles.add(new MuscleCar("Muscle Car", engine));
 
         engine = new V12("V12", 660, 214);
-        vehicles.add(new SportsCar("Super Car", engine));
+        vehicles.add(new SuperCar("Super Car", engine));
 
         engine = new FourCylinder("2.0L 4-cylinder", 150, 143);
         vehicles.add(new Sedan("Family Sedan", engine));
@@ -67,39 +68,31 @@ public class DragRace {
         String name = Input.getString();
 
         Engine engine = switch(engineType){
-            case 1 -> {
-                yield new FourCylinder("Custom", hp, topSpeed);
-            }
-            case 2 -> {
-                yield new V8("Custom", hp, topSpeed);
-            }
-            case 3 -> {
-                yield new V12("Custom", hp, topSpeed);
-            }
+            case 1 -> new FourCylinder("Custom", hp, topSpeed);
+            case 2 -> new V8("Custom", hp, topSpeed);
+            case 3 -> new V12("Custom", hp, topSpeed);
 
-            default -> throw new IllegalStateException("Unexpected value: " + engineType);
+            default -> throw new IllegalStateException("Invalid Engine type: " + engineType);
         };
 
-        Vehicle vehicle = switch(vehicleType){
+        return switch(vehicleType){
             case 1 -> new DragCar(name, engine);
             case 2 -> new MuscleCar(name, engine);
             case 3 -> new Sedan(name, engine);
             case 4 -> new SportsCar(name, engine);
-            case 5 -> new SUV(name, engine);
+            case 5 -> new SuperCar(name, engine);
+            case 6 -> new SUV(name, engine);
 
-            default -> throw new IllegalStateException("Unexpected value: " + vehicleType);
+            default -> throw new IllegalStateException("Invalid Vehicle type: " + vehicleType);
         };
-
-        return vehicle;
     }
 
     public void run(){
         System.out.println("Do you want to build your own car or select a pre-built?");
-        UI.listerator("Build Custom Car", "Show Pre-built Cars");
+        UI.listerator("Show Pre-built Cars", "Build Custom Car");
 
         Vehicle car = switch(Input.getInt(1,2)){
-            case 1 -> buildCar();
-            case 2 -> {
+            case 1 -> {
                 System.out.println("\nWhat car would you like to drive?");
 
                 String[] vehicleNames = vehicles.stream()
@@ -113,41 +106,41 @@ public class DragRace {
 
                 yield vehicles.get(choice);
             }
+            case 2 -> buildCar();
+
             default -> throw new IllegalStateException("Unexpected value: " + "");
         };
 
-        double acceleration = (double)car.engine.horsePower / car.weight * 10;
-        int mph = 0;
         int distance = 0;
         double time = 0;
         do{
-            System.out.printf("\nSpeed: %d mph\tDistance Travelled: %d ft\tTime: %.2f s\n", mph, distance, time);
+            System.out.printf("\nSpeed: %d mph\tDistance Travelled: %d ft\tTime: %.2f s\n", car.getMph(), distance, time);
             System.out.println("What would you like to do?");
             UI.listerator("accelerate", "cruise", "brake");
 
             switch(Input.getInt(1, 3)){
                 case 1 -> {
                     System.out.println("Speeding up...");
-                    mph += Math.sqrt(acceleration) * (car.engine.topSpeed - mph) / 10;
-                    if(mph > car.engine.topSpeed) mph = car.engine.topSpeed;
+                    car.accelerate();
                 }
 
                 case 2 -> System.out.println("Maintaining Speed...");
 
                 case 3 -> {
                     System.out.println("Slowing down...");
-                    mph -= acceleration - (mph / 10);
-                    if(mph < 0) mph = 0;
+                    car.brake();
                 }
             }
 
-            distance += mph * (22.0 / 15.0); // mph to feet per second; 5280 / 3600 = 22 / 15
+            distance += car.getMph() * (22.0 / 15.0); // mph to feet per second; 5280 / 3600 = 22 / 15
             ++time;
         }while(distance < QUARTER_MILE);
 
-        double fps = (double)mph * (22.0 / 15.0);
+        double fps = (double)car.getMph() * (22.0 / 15.0);
         double overTime = (distance - QUARTER_MILE) / fps;
-        double trapSpeed = mph + (1 - overTime) * fps / 88; // fps to mph; 5280 / 60 = 88
+        double trapSpeed = car.getMph() + (1 - overTime) * fps / 88; // fps to mph; 5280 / 60 = 88
+        if(trapSpeed > car.engine.topSpeed) trapSpeed = car.engine.topSpeed;
+
         System.out.printf("\nYou have finished the race in %.2f seconds with a trap speed of %.2f mph.",
                 time - overTime, trapSpeed);
     }
