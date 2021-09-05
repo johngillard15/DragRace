@@ -1,6 +1,8 @@
 package com.vehicles.engines;
 
-public abstract class Engine {
+import com.vehicles.Nameable;
+
+public abstract class Engine implements Nameable {
     public final String name;
     public final int horsePower;
     public final int weight;

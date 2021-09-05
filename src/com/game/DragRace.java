@@ -116,7 +116,7 @@ public class DragRace {
         do{
             System.out.printf("\nSpeed: %d mph\tDistance Travelled: %d ft\tTime: %.2f s\n", car.getMph(), distance, time);
             System.out.println("What would you like to do?");
-            UI.listerator("accelerate", "cruise", "brake");
+            UI.listerator("accelerate", "coast", "brake");
 
             switch(Input.getInt(1, 3)){
                 case 1 -> {

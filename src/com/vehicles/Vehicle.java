@@ -2,7 +2,7 @@ package com.vehicles;
 
 import com.vehicles.engines.Engine;
 
-public abstract class Vehicle {
+public abstract class Vehicle implements Nameable {
     public final String name;
     public final Engine engine;
     public final int weight;
