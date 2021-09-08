@@ -88,10 +88,34 @@ public class DragRace {
     }
 
     public void run(){
+        Vehicle car = selectVehicle();
+
+        int distance = 0;
+        double time = 0;
+        do{
+            System.out.printf("\nSpeed: %d mph\tDistance Travelled: %d ft\tTime: %.2f s\n", car.getMph(), distance, time);
+
+            turn(car);
+
+            distance += car.getMph() * (22.0 / 15.0); // mph to feet per second; 5280 / 3600 = 22 / 15
+            ++time;
+        }while(distance < QUARTER_MILE);
+
+        double fps = (double)car.getMph() * (22.0 / 15.0);
+        double overTime = (distance - QUARTER_MILE) / fps;
+        double trapSpeed = car.getMph() + (1 - overTime) * fps / 88;
+        if(trapSpeed > car.engine.topSpeed) trapSpeed = car.engine.topSpeed;
+
+        System.out.printf("\nYou have finished the race in %.2f seconds with a trap speed of %.2f mph.",
+                time - overTime, trapSpeed);
+    }
+
+    private Vehicle selectVehicle(){
         System.out.println("Do you want to build your own car or select a pre-built?");
         UI.listerator("Show Pre-built Cars", "Build Custom Car");
 
-        Vehicle car = switch(Input.getInt(1,2)){
+        int choice = Input.getInt(1,2);
+        return switch(choice){
             case 1 -> {
                 System.out.println("\nWhat car would you like to drive?");
 
@@ -102,46 +126,31 @@ public class DragRace {
                         ; // also map(v -> v.name)
 
                 UI.listerator(vehicleNames);
-                int choice = Input.getInt(1, vehicles.size()) - 1;
 
-                yield vehicles.get(choice);
+                yield vehicles.get(Input.getInt(1, vehicles.size()) - 1);
             }
             case 2 -> buildCar();
 
-            default -> throw new IllegalStateException("Unexpected value: " + "");
+            default -> throw new IllegalStateException("Unexpected value: " + choice);
         };
+    }
 
-        int distance = 0;
-        double time = 0;
-        do{
-            System.out.printf("\nSpeed: %d mph\tDistance Travelled: %d ft\tTime: %.2f s\n", car.getMph(), distance, time);
-            System.out.println("What would you like to do?");
-            UI.listerator("accelerate", "coast", "brake");
+    private void turn(Vehicle car){
+        System.out.println("What would you like to do?");
+        UI.listerator("accelerate", "coast", "brake");
 
-            switch(Input.getInt(1, 3)){
-                case 1 -> {
-                    System.out.println("Speeding up...");
-                    car.accelerate();
-                }
-
-                case 2 -> System.out.println("Maintaining Speed...");
-
-                case 3 -> {
-                    System.out.println("Slowing down...");
-                    car.brake();
-                }
+        switch(Input.getInt(1, 3)){
+            case 1 -> {
+                System.out.println("Speeding up...");
+                car.accelerate();
             }
 
-            distance += car.getMph() * (22.0 / 15.0); // mph to feet per second; 5280 / 3600 = 22 / 15
-            ++time;
-        }while(distance < QUARTER_MILE);
+            case 2 -> System.out.println("Maintaining Speed...");
 
-        double fps = (double)car.getMph() * (22.0 / 15.0);
-        double overTime = (distance - QUARTER_MILE) / fps;
-        double trapSpeed = car.getMph() + (1 - overTime) * fps / 88; // fps to mph; 5280 / 60 = 88
-        if(trapSpeed > car.engine.topSpeed) trapSpeed = car.engine.topSpeed;
-
-        System.out.printf("\nYou have finished the race in %.2f seconds with a trap speed of %.2f mph.",
-                time - overTime, trapSpeed);
+            case 3 -> {
+                System.out.println("Slowing down...");
+                car.brake();
+            }
+        }
     }
 }
